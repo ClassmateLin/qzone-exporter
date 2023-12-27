@@ -1,0 +1,66 @@
+{
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "beforeBuildCommand": "npm run build",
+    "devPath": "http://localhost:1420",
+    "distDir": "../dist",
+    "withGlobalTauri": true
+  },
+  "package": {
+    "productName": "QQ空间导出器",
+    "version": "0.1.0"
+  },
+  "tauri": {
+    "allowlist": {
+      "app": {
+        "all": true, 
+        "show": true,
+        "hide": true
+      },
+      "shell": {
+        "all": true,
+        "execute": false,
+        "open": false,
+        "scope": [],
+        "sidecar": false
+      },
+      "window": {
+        "all": true
+      }
+    },
+    "bundle": {
+      "active": true,
+      "targets": "all",
+      "identifier": "com.qzone-exporter.dev",
+      "publisher": "classmatelin",
+      "shortDescription": "QQ",
+      "icon": [
+        "icons/32x32.png",
+        "icons/128x128.png",
+        "icons/128x128@2x.png",
+        "icons/icon.icns",
+        "icons/icon.ico"
+      ]
+    },
+    "security": {
+      "csp": null
+    },
+    "windows": [
+      {
+        "label": "main",
+        "title": "qzone-exporter",
+        "fullscreen": false,
+        "resizable": false,
+        "width": 1280,
+        "height": 720,
+        "center": true
+      }
+    ],
+    "systemTray": {
+      "iconPath": "icons/32x32.png",
+      "title": "QQ空间导出器",
+      "iconAsTemplate": true,
+      "menuOnLeftClick": true
+    }
+  }
+}
