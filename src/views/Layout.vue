@@ -1,9 +1,15 @@
 <script setup lang="ts">
+import { toast } from 'vue3-toastify';
 import { shell } from "@tauri-apps/api"
 import { RouterLink, RouterView } from "vue-router";
+import { onMounted } from 'vue';
 const onClickQZone = () => {
   shell.open('https://github.com/ClassmateLin/qzone-exporter')
 }
+
+onMounted(() => {
+    toast.success("登录成功")
+})
 </script>
 
 <template>

@@ -13,7 +13,8 @@
     "@tauri-apps/api": "^1.5.3",
     "tauri-plugin-store-api": "github:tauri-apps/tauri-plugin-store#v1",
     "vue": "^3.3.4",
-    "vue-router": "^4.2.5"
+    "vue-router": "^4.2.5",
+    "vue3-toastify": "^0.2.1"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^1.5.6",

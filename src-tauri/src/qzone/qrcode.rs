@@ -1,15 +1,12 @@
-use std::path::PathBuf;
-
 use super::{client::get_http_client, error::QZoneError, QZoneCookie};
-use anyhow::{Error, Result};
+use anyhow::Result;
 use chrono::Local;
+use base64::{Engine as _, engine::general_purpose};
 use num_bigint::BigUint;
 use regex::Regex;
 use reqwest::header::{self, HeaderValue, COOKIE, USER_AGENT};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
-use tokio::{fs::File, io::AsyncWriteExt};
-
 const QRCODE_VALID: &str = "二维码未失效";
 const QRCODE_EXPIRED: &str = "二维码已失效";
 const QRCODE_VERIFYING: &str = "二维码认证中";
@@ -34,7 +31,7 @@ pub struct QRCodeLoginResult {
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct QRCode {
-    pub qrcode_path: String, // 二维码图片保存路径
+    pub qrcode_data: String, // 二维码图片保存路径
     pub qrsig: String,       // 二维码签名
     pub ptqrtoken: String,   // 二维码token
 }
@@ -49,18 +46,10 @@ fn get_ptqrtoken(qrsig: &str) -> String {
     (i & e).to_string()
 }
 
-fn get_base_dir() -> Result<PathBuf, Error> {
-    let path = match project_root::get_project_root() {
-        Ok(p) => Ok(p),
-        Err(e) => Err(e),
-    }?;
-
-    Ok(path.parent().unwrap().into())
-}
-
 // 获取QQ空间登录二维码
 #[tauri::command(async)]
 pub async fn get_login_qrcode() -> Result<QRCode, QZoneError> {
+    
     let url = "https://ssl.ptlogin2.qq.com/ptqrshow?appid=549000912&e=2&l=M&s=3&d=72&v=4&t=0.8692955245720428&daid=5&pt_3rd_aid=0";
 
     let client = get_http_client().await?;
@@ -89,21 +78,11 @@ pub async fn get_login_qrcode() -> Result<QRCode, QZoneError> {
         .bytes()
         .await
         .map_err(|_| QZoneError::DecodeError)?;
-
-    let qrcode_path = String::from("public/imgs/.qrcode.png");
-    let abs_qrcode_path = get_base_dir()
-        .map_err(|_| QZoneError::FileError)?
-        .join(&qrcode_path);
-
-    let mut file = File::create(&abs_qrcode_path)
-        .await
-        .map_err(|_| QZoneError::FileError)?;
-    file.write_all(&body)
-        .await
-        .map_err(|_| QZoneError::FileError)?;
+    
+    let qrcode_data = general_purpose::STANDARD.encode(&body);
 
     Ok(QRCode {
-        qrcode_path,
+        qrcode_data,
         qrsig,
         ptqrtoken,
     })

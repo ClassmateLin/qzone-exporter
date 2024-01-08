@@ -1,6 +1,6 @@
 [package]
 name = "qzone_exporter"
-version = "0.0.0"
+version = "0.1.0"
 description = "A Tauri App"
 authors = ["you"]
 license = ""
@@ -34,6 +34,8 @@ chrono = {version="0.4.31"}
 regex = {version="1.10.2"}
 tauri-plugin-single-instance = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v1" }
 tauri-plugin-store = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v1" }
+base64 = "0.21.5"
+
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem
 # DO NOT REMOVE!!

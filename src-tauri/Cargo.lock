@@ -2754,9 +2754,10 @@ dependencies = [
 
 [[package]]
 name = "qzone_exporter"
-version = "0.0.0"
+version = "0.1.0"
 dependencies = [
  "anyhow",
+ "base64 0.21.5",
  "chrono",
  "num-bigint",
  "project-root",

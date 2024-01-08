@@ -4,9 +4,9 @@ import { ref, onMounted } from 'vue'
 import { emit } from '@tauri-apps/api/event'
 import EventName from '../constant/event';
 import { save_store, set_value } from '../store';
-
+import { toast } from 'vue3-toastify';
 type QRCode = {
-  qrcode_path: string, // 二维码图片保存路径
+  qrcode_data: string, // 二维码图片保存路径
   qrsig: string,       // 二维码签名
   ptqrtoken: string,   // 二维码token  path
 }
@@ -27,13 +27,18 @@ type QRCodeLoginResult = {
 
 const IsQRCodeLoading = ref(true)
 
-const qrcode_path = ref("https://avatars.githubusercontent.com/u/53087849?s=96&v=4")
+const qrcode_data = ref("")
+
 const status_msg = ref("");
+
 onMounted(async () => {
   try {
     const qrcode: QRCode = await invoke("get_login_qrcode")
-    qrcode_path.value = qrcode.qrcode_path
+
+    qrcode_data.value = 'data:image/png;base64,' + qrcode.qrcode_data;
+
     IsQRCodeLoading.value = false
+
     const interval_id = setInterval(async () => {
       const login_res: QRCodeLoginResult = await invoke("get_login_result", { qrcode: qrcode })
       status_msg.value = login_res.msg
@@ -50,15 +55,13 @@ onMounted(async () => {
       } else if (login_res.code == QRCodeResultCode.Expired || login_res.code == QRCodeResultCode.Unknown) {
         IsQRCodeLoading.value = true
         const qrcode: QRCode = await invoke("get_login_qrcode")
-        qrcode_path.value = qrcode.qrcode_path
+        qrcode_data.value = 'data:image/png;base64,' + qrcode.qrcode_data;
         IsQRCodeLoading.value = false
       }
     }, 2 * 1000)
-  } catch (e) {
-
+  } catch (e: any) {
+    toast.error(e)
   }
-
-
 
 
 })
@@ -71,7 +74,7 @@ onMounted(async () => {
     <div class="card-body">
       <label class="label card-title justify-center">请使用手机版QQ扫码</label>
 
-      <label v-if="!IsQRCodeLoading" class="label justify-center"><img :src="qrcode_path"></label>
+      <label v-if="!IsQRCodeLoading" class="label justify-center"><img :src="qrcode_data"></label>
       <label v-else class="label justify-center"><span class="loading loading-spinner loading-lg"></span></label>
 
       <label class="label justify-center">{{ status_msg }}</label>

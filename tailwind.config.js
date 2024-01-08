@@ -2,7 +2,11 @@
 export default {
   content: ['./index.html', './src/**/*.vue', './src/**/*.ts'],
   theme: {
-    extend: {},
+    extend: {
+      spacing: {
+        '5px': '5px',
+      }
+    },
   },
   plugins: [require("daisyui")],
   daisyui: {
